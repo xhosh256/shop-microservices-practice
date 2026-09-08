@@ -1,4 +1,4 @@
-package test.java.cephei.dev.user_service.unit;
+package cephei.dev.user_service.unit;
 
 import cephei.dev.user_service.dto.UserCreateDto;
 import cephei.dev.user_service.dto.UserReadDto;

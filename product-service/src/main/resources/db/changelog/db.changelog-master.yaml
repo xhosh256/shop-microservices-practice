@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+        file: db/changelog/sql/v1/001-create-catigories.sql
+  - include :
+      file: db/changelog/sql/v1/002-create-products.sql

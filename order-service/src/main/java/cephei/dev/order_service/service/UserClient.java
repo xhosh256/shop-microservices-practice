@@ -15,9 +15,16 @@ public class UserClient {
                 .build();
     }
 
-    public UserDto getUser(Integer userId) {
+    public UserDto getUserById(Integer userId) {
         return restClient.get()
-                .uri("/api/v1/users/{id}", userId)
+                .uri("/api/v1/users/id/{id}", userId)
+                .retrieve()
+                .body(UserDto.class);
+    }
+
+    public UserDto getUserByUsername(String username) {
+        return restClient.get()
+                .uri("/api/v1/users/username/{username}", username)
                 .retrieve()
                 .body(UserDto.class);
     }

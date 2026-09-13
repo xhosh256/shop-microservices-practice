@@ -9,10 +9,12 @@ import cephei.dev.order_service.entity.OrderItem;
 import cephei.dev.order_service.mapper.OrderMapper;
 import cephei.dev.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class OrderService {
     @Transactional
     public OrderReadDto addToOrder(OrderItemAddDto orderProductDto) {
         ProductDto product = productClient.getProduct(orderProductDto.productId());
-        UserDto user = userClient.getUser(orderProductDto.userId());
+        UserDto user = userClient.getUserById(orderProductDto.userId());
 
         Order order = orderRepository.findByUserId(user.id())
                 .orElseGet(() -> createOrder(orderProductDto.userId()));
@@ -59,9 +61,19 @@ public class OrderService {
                 .build();
     }
 
-    public OrderReadDto showOrder(Integer userId) {
-        Order order = orderRepository.findByUserId(userId)
-                .orElseGet(() -> createOrder(userId));
+    @Transactional
+    public OrderReadDto showOrder(String username) {
+        UserDto user = userClient.getUserByUsername(username);
+        Optional<Order> maybeOrder = orderRepository.findByUserId(user.id());
+        Order order = null;
+
+        if(maybeOrder.isEmpty()) {
+            order = createOrder(user.id());
+            orderRepository.save(order);
+        } else {
+            order = maybeOrder.get();
+        }
+
         return orderMapper.toReadDto(order);
     }
 }

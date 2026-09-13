@@ -4,6 +4,8 @@ import cephei.dev.order_service.dto.OrderItemAddDto;
 import cephei.dev.order_service.dto.OrderReadDto;
 import cephei.dev.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,10 +22,10 @@ public class OrderRestController {
         return orderService.addToOrder(orderProductDto);
     }
 
-    @GetMapping("/items/{id}")
+    @GetMapping("/items")
     public OrderReadDto showOrder(
-            @PathVariable("id") Integer userId
-    ) {
-        return orderService.showOrder(userId);
+            @AuthenticationPrincipal String username
+            ) {
+        return orderService.showOrder(username);
     }
 }

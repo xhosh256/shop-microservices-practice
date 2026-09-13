@@ -23,6 +23,7 @@ public class AuthController {
             @RequestBody AccountCreateDto accountCreateDto
     ) {
         authService.register(accountCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")

@@ -1,5 +1,6 @@
 package cephei.dev.user_service.service;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import cephei.dev.user_service.dto.UserCreateDto;
 import cephei.dev.user_service.dto.UserReadDto;
 import cephei.dev.user_service.entity.Profile;
@@ -45,5 +46,11 @@ public class UserService {
         userRepository.save(user);
 
         return userMapper.toReadDto(user);
+    }
+
+    public Optional<UserReadDto> findByUsername(String username) {
+        return userRepository
+                .findByUsername(username)
+                .map(userMapper::toReadDto);
     }
 }

@@ -24,9 +24,18 @@ public class UserRestController {
         return userService.findAll(pageable);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<UserReadDto> findById(@PathVariable Integer id) {
         return userService.findById(id)
+                .map((userReadDto) -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(userReadDto))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserReadDto> findById(@PathVariable String username) {
+        return userService.findByUsername(username)
                 .map((userReadDto) -> ResponseEntity
                         .status(HttpStatus.OK)
                         .body(userReadDto))

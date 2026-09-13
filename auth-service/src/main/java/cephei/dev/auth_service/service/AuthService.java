@@ -12,10 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final CredentialsRepository credentialsRepository;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Transactional
     public void register(AccountCreateDto accountCreateDto) {
@@ -38,6 +42,9 @@ public class AuthService {
     }
 
     public UserSessionReadDto verify(AccountLoginDto accountLoginDto) {
+        Credentials credentials = credentialsRepository.findByUsername(accountLoginDto.username())
+                .orElseThrow(() -> new UsernameNotFoundException("username not found"));
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         accountLoginDto.username(), accountLoginDto.password()
@@ -45,7 +52,15 @@ public class AuthService {
         );
 
         if(authentication.isAuthenticated()) {
-            // return jwtService.generate();
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("role", credentials.getRole());
+
+            String token = jwtService.generateToken(claims, accountLoginDto.username());
+
+             return new UserSessionReadDto(
+                     accountLoginDto.username(),
+                     token
+             );
         }
 
         return null;

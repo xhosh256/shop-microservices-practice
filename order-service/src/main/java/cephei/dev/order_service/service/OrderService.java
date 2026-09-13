@@ -9,7 +9,6 @@ import cephei.dev.order_service.entity.OrderItem;
 import cephei.dev.order_service.mapper.OrderMapper;
 import cephei.dev.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +29,7 @@ public class OrderService {
     @Transactional
     public OrderReadDto addToOrder(OrderItemAddDto orderProductDto) {
         ProductDto product = productClient.getProduct(orderProductDto.productId());
-        UserDto user = userClient.getUserById(orderProductDto.userId());
+        UserDto user = userClient.findById(orderProductDto.userId());
 
         Order order = orderRepository.findByUserId(user.id())
                 .orElseGet(() -> createOrder(orderProductDto.userId()));
@@ -63,7 +62,7 @@ public class OrderService {
 
     @Transactional
     public OrderReadDto showOrder(String username) {
-        UserDto user = userClient.getUserByUsername(username);
+        UserDto user = userClient.findByUsername(username);
         Optional<Order> maybeOrder = orderRepository.findByUserId(user.id());
         Order order = null;
 

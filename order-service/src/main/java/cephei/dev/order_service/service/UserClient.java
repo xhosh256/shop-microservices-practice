@@ -1,31 +1,19 @@
 package cephei.dev.order_service.service;
 
 import cephei.dev.order_service.dto.UserDto;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@Service
-public class UserClient {
+@FeignClient(
+        name = "user-service",
+        url = "http://localhost:8081"
+)
+public interface UserClient {
 
-    private final RestClient restClient;
+    @GetMapping("/api/v1/users/id/{id}")
+    UserDto findById(@PathVariable Integer id);
 
-    public UserClient() {
-        this.restClient = RestClient.builder()
-                .baseUrl("http://localhost:8081")
-                .build();
-    }
-
-    public UserDto getUserById(Integer userId) {
-        return restClient.get()
-                .uri("/api/v1/users/id/{id}", userId)
-                .retrieve()
-                .body(UserDto.class);
-    }
-
-    public UserDto getUserByUsername(String username) {
-        return restClient.get()
-                .uri("/api/v1/users/username/{username}", username)
-                .retrieve()
-                .body(UserDto.class);
-    }
+    @GetMapping("/api/v1/users/username/{username}")
+    UserDto findByUsername(@PathVariable String username);
 }

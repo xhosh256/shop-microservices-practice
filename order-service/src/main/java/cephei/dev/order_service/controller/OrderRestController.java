@@ -4,10 +4,7 @@ import cephei.dev.order_service.dto.OrderItemAddDto;
 import cephei.dev.order_service.dto.OrderReadDto;
 import cephei.dev.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -21,5 +18,12 @@ public class OrderRestController {
            @RequestBody OrderItemAddDto orderProductDto
     ) {
         return orderService.addToOrder(orderProductDto);
+    }
+
+    @GetMapping("/items/{id}")
+    public OrderReadDto showOrder(
+            @PathVariable("id") Integer userId
+    ) {
+        return orderService.showOrder(userId);
     }
 }

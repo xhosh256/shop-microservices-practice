@@ -58,4 +58,10 @@ public class OrderService {
                 .totalPrice(BigDecimal.valueOf(0))
                 .build();
     }
+
+    public OrderReadDto showOrder(Integer userId) {
+        Order order = orderRepository.findByUserId(userId)
+                .orElseGet(() -> createOrder(userId));
+        return orderMapper.toReadDto(order);
+    }
 }

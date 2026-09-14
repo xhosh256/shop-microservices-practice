@@ -15,6 +15,11 @@ public class OrderRestController {
 
     private final OrderService orderService;
 
+    @GetMapping("/testEureka")
+    public String testEureka() {
+        return orderService.testEureka();
+    }
+
     @PostMapping("/items")
     public OrderReadDto addToOrder(
            @RequestBody OrderItemAddDto orderProductDto

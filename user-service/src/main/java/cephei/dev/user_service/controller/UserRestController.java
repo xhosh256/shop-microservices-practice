@@ -4,6 +4,7 @@ import cephei.dev.user_service.dto.UserCreateDto;
 import cephei.dev.user_service.dto.UserReadDto;
 import cephei.dev.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,9 +20,17 @@ public class UserRestController {
 
     private final UserService userService;
 
+    @Value("${server.port}")
+    private String port;
+
     @GetMapping
     public Page<UserReadDto> findAll(@PageableDefault(size = 5, page = 0) Pageable pageable) {
         return userService.findAll(pageable);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Hello, Eureka! LoadBalancer caught port: " + port;
     }
 
     @GetMapping("/id/{id}")

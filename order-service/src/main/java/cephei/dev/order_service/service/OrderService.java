@@ -75,4 +75,8 @@ public class OrderService {
 
         return orderMapper.toReadDto(order);
     }
+
+    public String testEureka() {
+        return userClient.test();
+    }
 }

@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shop_order_db
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 12345
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+  cloud:
+    openfeign:
+      client:
+        config:
+          user-service:
+            connectTimeout: 2000
+            readTimeout: 5000
+          product-service:
+            connectTimeout: 2000
+            readTimeout: 5000
+server:
+  port: 8083
+jwt:
+  secret: b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+  expiration: 86400000
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:6767/eureka/
